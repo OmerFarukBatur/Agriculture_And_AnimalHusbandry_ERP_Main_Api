@@ -7,6 +7,6 @@ namespace Domain.Entities
         public string CategoryName { get; set; }
         public string Description { get; set; }
 
-        public Product Product { get; set; } // Bire çok ilişki (1 kategori - n ürün)
+        public ICollection<Product> Products { get; set; } // Bire çok ilişki (1 kategori - n ürün)
     }
 }

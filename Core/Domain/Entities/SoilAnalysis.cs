@@ -23,6 +23,11 @@ namespace Domain.Entities
         public double ManganeseRatio { get; set; } // Mangan oranı
         public string AnalysisDescription { get; set; } // Analiz açıklaması/sonucu
 
+        public Guid LandId { get; set; }
+        public Guid UnitOfMeasurementId { get; set; }
+
         public UnitOfMeasurement UnitOfMeasurement { get; set; } // Analiz oranlarının birimleri -- bire bir ilişki
+
+        public Land Land { get; set; }
     }
 }

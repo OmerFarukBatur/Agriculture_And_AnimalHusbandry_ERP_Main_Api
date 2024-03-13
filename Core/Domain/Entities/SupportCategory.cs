@@ -6,5 +6,7 @@ namespace Domain.Entities
     {
         public string SupportCategoryName { get; set; }
         public string SupportCategoryDescription { get; set;}
+
+        public ICollection<PlantingSupport> PlantingSupports { get; set; }
     }
 }
