@@ -10,7 +10,7 @@ namespace Domain.Entities
         public string Village { get; set; }
         public string FullAddress { get; set; }
 
-        public AppUser AppUser { get; set; }
-        public Land Land { get; set; }
+        public ICollection<AppUser> AppUsers { get; set; }
+        public ICollection<Land> Lands { get; set; }
     }
 }

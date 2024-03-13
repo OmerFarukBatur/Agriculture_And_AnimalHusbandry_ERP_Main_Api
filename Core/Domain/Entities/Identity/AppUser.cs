@@ -9,7 +9,7 @@ namespace Domain.Entities.Identity
         public DateTime? RefreshTokenEndDate { get; set; }
 
         public Guid AddressId { get; set; }
-        public ICollection<Address> Addresses { get; set; }
-        public ICollection<Land> Lands { get; set; }
+        //public ICollection<Address> Addresses { get; set; }
+        //public ICollection<Land> Lands { get; set; }
     }
 }

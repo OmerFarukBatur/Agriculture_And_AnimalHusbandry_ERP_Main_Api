@@ -14,7 +14,7 @@ namespace Domain.Entities
         public bool WasItPlanted { get; set; } // Ekilip Ekilmediğini belli eder
 
         public Guid UserId { get; set; }
-        public Guid IcarUserId { get; set; }
+        public Guid? IcarUserId { get; set; }
         public Guid UnitOfMeasurementId { get; set; }
         public Guid AddressId { get; set; }
 
