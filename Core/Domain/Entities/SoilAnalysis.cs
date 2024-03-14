@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
@@ -23,7 +24,9 @@ namespace Domain.Entities
         public double? ManganeseRatio { get; set; } // Mangan oranı
         public string? AnalysisDescription { get; set; } // Analiz açıklaması/sonucu
 
+        [ForeignKey("Land")]
         public Guid LandId { get; set; }
+        [ForeignKey("UnitOfMeasurement")]
         public Guid UnitOfMeasurementId { get; set; }
 
         public UnitOfMeasurement UnitOfMeasurement { get; set; } // Analiz oranlarının birimleri -- bire bir ilişki

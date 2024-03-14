@@ -23,6 +23,9 @@ namespace Persistence.Contexts
         public DbSet<SoilAnalysis> SoilAnalyses { get; set; }
         public DbSet<SupportCategory> SupportCategories { get; set; }
         public DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
+        public DbSet<City> Cities { get; set; }
+        public DbSet<District> Districts { get; set; }
+        public DbSet<Village> Villages { get; set; }
 
 
 

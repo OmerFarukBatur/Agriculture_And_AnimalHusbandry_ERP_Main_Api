@@ -13,24 +13,6 @@ namespace Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Addresses",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    City = table.Column<string>(type: "text", nullable: false),
-                    District = table.Column<string>(type: "text", nullable: false),
-                    Village = table.Column<string>(type: "text", nullable: false),
-                    FullAddress = table.Column<string>(type: "text", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Status = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -58,6 +40,21 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cities",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CityName = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -122,6 +119,156 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoleId = table.Column<string>(type: "text", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Districts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    DistrictName = table.Column<string>(type: "text", nullable: false),
+                    CityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Districts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Districts_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Endpoints",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ActionType = table.Column<string>(type: "text", nullable: false),
+                    HttpType = table.Column<string>(type: "text", nullable: false),
+                    Definition = table.Column<string>(type: "text", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: false),
+                    MenuId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Endpoints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Endpoints_Menus_MenuId",
+                        column: x => x.MenuId,
+                        principalTable: "Menus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Villages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    VillageName = table.Column<string>(type: "text", nullable: false),
+                    DistrictId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Villages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Villages_Districts_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "Districts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppRoleEndpoint",
+                columns: table => new
+                {
+                    EndpointsId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RolesId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppRoleEndpoint", x => new { x.EndpointsId, x.RolesId });
+                    table.ForeignKey(
+                        name: "FK_AppRoleEndpoint_AspNetRoles_RolesId",
+                        column: x => x.RolesId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppRoleEndpoint_Endpoints_EndpointsId",
+                        column: x => x.EndpointsId,
+                        principalTable: "Endpoints",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DistrictId = table.Column<Guid>(type: "uuid", nullable: false),
+                    VillageId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FullAddress = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Districts_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "Districts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Villages_VillageId",
+                        column: x => x.VillageId,
+                        principalTable: "Villages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -152,52 +299,6 @@ namespace Persistence.Migrations
                         name: "FK_AspNetUsers_Addresses_AddressId",
                         column: x => x.AddressId,
                         principalTable: "Addresses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RoleId = table.Column<string>(type: "text", nullable: false),
-                    ClaimType = table.Column<string>(type: "text", nullable: true),
-                    ClaimValue = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Endpoints",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ActionType = table.Column<string>(type: "text", nullable: false),
-                    HttpType = table.Column<string>(type: "text", nullable: false),
-                    Definition = table.Column<string>(type: "text", nullable: false),
-                    Code = table.Column<string>(type: "text", nullable: false),
-                    MenuId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Status = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Endpoints", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Endpoints_Menus_MenuId",
-                        column: x => x.MenuId,
-                        principalTable: "Menus",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -299,12 +400,10 @@ namespace Persistence.Migrations
                     Area = table.Column<int>(type: "integer", nullable: false),
                     Location = table.Column<string>(type: "text", nullable: false),
                     WasItPlanted = table.Column<bool>(type: "boolean", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    IcarUserId = table.Column<Guid>(type: "uuid", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    IcarUserId = table.Column<string>(type: "text", nullable: true),
                     UnitOfMeasurementId = table.Column<Guid>(type: "uuid", nullable: false),
                     AddressId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId1 = table.Column<string>(type: "text", nullable: true),
-                    IcarUserId1 = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<bool>(type: "boolean", nullable: false)
@@ -319,43 +418,15 @@ namespace Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Lands_AspNetUsers_IcarUserId1",
-                        column: x => x.IcarUserId1,
+                        name: "FK_Lands_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Lands_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Lands_UnitOfMeasurements_UnitOfMeasurementId",
                         column: x => x.UnitOfMeasurementId,
                         principalTable: "UnitOfMeasurements",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppRoleEndpoint",
-                columns: table => new
-                {
-                    EndpointsId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RolesId = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppRoleEndpoint", x => new { x.EndpointsId, x.RolesId });
-                    table.ForeignKey(
-                        name: "FK_AppRoleEndpoint_AspNetRoles_RolesId",
-                        column: x => x.RolesId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AppRoleEndpoint_Endpoints_EndpointsId",
-                        column: x => x.EndpointsId,
-                        principalTable: "Endpoints",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -533,6 +604,21 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Addresses_CityId",
+                table: "Addresses",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_DistrictId",
+                table: "Addresses",
+                column: "DistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_VillageId",
+                table: "Addresses",
+                column: "VillageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AppRoleEndpoint_RolesId",
                 table: "AppRoleEndpoint",
                 column: "RolesId");
@@ -580,6 +666,11 @@ namespace Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Districts_CityId",
+                table: "Districts",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Endpoints_MenuId",
                 table: "Endpoints",
                 column: "MenuId");
@@ -595,20 +686,15 @@ namespace Persistence.Migrations
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Lands_IcarUserId1",
-                table: "Lands",
-                column: "IcarUserId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Lands_UnitOfMeasurementId",
                 table: "Lands",
                 column: "UnitOfMeasurementId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Lands_UserId1",
+                name: "IX_Lands_UserId",
                 table: "Lands",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlantingSupports_LandId",
@@ -649,6 +735,11 @@ namespace Persistence.Migrations
                 name: "IX_SoilAnalyses_UnitOfMeasurementId",
                 table: "SoilAnalyses",
                 column: "UnitOfMeasurementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Villages_DistrictId",
+                table: "Villages",
+                column: "DistrictId");
         }
 
         /// <inheritdoc />
@@ -719,6 +810,15 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Addresses");
+
+            migrationBuilder.DropTable(
+                name: "Villages");
+
+            migrationBuilder.DropTable(
+                name: "Districts");
+
+            migrationBuilder.DropTable(
+                name: "Cities");
         }
     }
 }

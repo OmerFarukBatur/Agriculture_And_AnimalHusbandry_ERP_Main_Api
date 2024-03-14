@@ -43,16 +43,14 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("District")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("DistrictId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("FullAddress")
                         .IsRequired()
@@ -64,11 +62,16 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Village")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("VillageId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("DistrictId");
+
+                    b.HasIndex("VillageId");
 
                     b.ToTable("Addresses");
                 });
@@ -99,6 +102,59 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Domain.Entities.City", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CityName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cities");
+                });
+
+            modelBuilder.Entity("Domain.Entities.District", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DistrictName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("Districts");
                 });
 
             modelBuilder.Entity("Domain.Entities.Endpoint", b =>
@@ -262,10 +318,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("IcarUserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("IcarUserId1")
+                    b.Property<string>("IcarUserId")
                         .HasColumnType("text");
 
                     b.Property<int>("IslandNo")
@@ -295,10 +348,8 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("WasItPlanted")
@@ -308,12 +359,10 @@ namespace Persistence.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.HasIndex("IcarUserId1");
-
                     b.HasIndex("UnitOfMeasurementId")
                         .IsUnique();
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Lands");
                 });
@@ -597,6 +646,35 @@ namespace Persistence.Migrations
                     b.ToTable("UnitOfMeasurements");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Village", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DistrictId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("VillageName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistrictId");
+
+                    b.ToTable("Villages");
+                });
+
             modelBuilder.Entity("LandProductPlanted", b =>
                 {
                     b.Property<Guid>("LandsId")
@@ -748,6 +826,44 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Entities.Address", b =>
+                {
+                    b.HasOne("Domain.Entities.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.District", "District")
+                        .WithMany()
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Village", "Village")
+                        .WithMany()
+                        .HasForeignKey("VillageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("District");
+
+                    b.Navigation("Village");
+                });
+
+            modelBuilder.Entity("Domain.Entities.District", b =>
+                {
+                    b.HasOne("Domain.Entities.City", "City")
+                        .WithMany("Districts")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+                });
+
             modelBuilder.Entity("Domain.Entities.Endpoint", b =>
                 {
                     b.HasOne("Domain.Entities.Menu", "Menu")
@@ -776,10 +892,6 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Identity.AppUser", "IcarUser")
-                        .WithMany()
-                        .HasForeignKey("IcarUserId1");
-
                     b.HasOne("Domain.Entities.UnitOfMeasurement", "UnitOfMeasurement")
                         .WithOne("Land")
                         .HasForeignKey("Domain.Entities.Land", "UnitOfMeasurementId")
@@ -788,11 +900,11 @@ namespace Persistence.Migrations
 
                     b.HasOne("Domain.Entities.Identity.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Address");
-
-                    b.Navigation("IcarUser");
 
                     b.Navigation("UnitOfMeasurement");
 
@@ -857,6 +969,17 @@ namespace Persistence.Migrations
                     b.Navigation("Land");
 
                     b.Navigation("UnitOfMeasurement");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Village", b =>
+                {
+                    b.HasOne("Domain.Entities.District", "District")
+                        .WithMany("Villages")
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("District");
                 });
 
             modelBuilder.Entity("LandProductPlanted", b =>
@@ -950,6 +1073,16 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Domain.Entities.City", b =>
+                {
+                    b.Navigation("Districts");
+                });
+
+            modelBuilder.Entity("Domain.Entities.District", b =>
+                {
+                    b.Navigation("Villages");
                 });
 
             modelBuilder.Entity("Domain.Entities.Land", b =>

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
@@ -6,9 +7,11 @@ namespace Domain.Entities
     {
         public bool ExtraSupport { get; set; } // Önerilen ekildiğinde aktif olur
         public double SupportAmount { get; set; } // Destek miktarı
-        
 
+
+        [ForeignKey("Land")]
         public Guid LandId { get; set; }
+        [ForeignKey("SupportCategory")]
         public Guid SupportCategoryId { get; set; }
 
         public Land Land { get; set; }

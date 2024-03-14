@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Common;
 using Domain.Entities.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
@@ -13,14 +14,17 @@ namespace Domain.Entities
         public string Location { get; set; }
         public bool WasItPlanted { get; set; } // Ekilip Ekilmediğini belli eder
 
-        public Guid UserId { get; set; }
-        public Guid? IcarUserId { get; set; }
+        [ForeignKey("AppUser")]
+        public string UserId { get; set; }
+        [ForeignKey("AppUser")]
+        public string? IcarUserId { get; set; }
+        [ForeignKey("UnitOfMeasurement")]
         public Guid UnitOfMeasurementId { get; set; }
+        [ForeignKey("Address")]
         public Guid AddressId { get; set; }
 
 
         public AppUser User { get; set; } // Bir e çok ilişki
-        public AppUser IcarUser { get; set; } // İcarlayan kişi  Bir e çok ilişki
         public UnitOfMeasurement UnitOfMeasurement { get; set; } // Bir e çok ilişki
         public Address Address { get; set; } // Birebir ilişki
         public ICollection<SoilAnalysis> SoilAnalysis { get; set; } // Bire çok ilişki (1 toprak - n analiz)
