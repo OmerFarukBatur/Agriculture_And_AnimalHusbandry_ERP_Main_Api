@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Commands\" />
-    <Folder Include="Features\Queries\" />
+    <Folder Include="Features\Queries\City\" />
+    <Folder Include="Repositories\Address\" />
   </ItemGroup>
 
 </Project>
