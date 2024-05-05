@@ -1,8 +1,13 @@
-﻿using Domain.Entities.Identity;
+﻿using Application.Abstractions.Services;
+using Application.Repositories.City;
+using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Persistence.Contexts;
+using Persistence.Repositories.City;
+using Persistence.Services;
 
 namespace Persistence
 {
@@ -20,7 +25,9 @@ namespace Persistence
                 options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<AgricultureAndAnimalHusbandryWebAPIDbContext>().AddDefaultTokenProviders();
 
-            
+
+            services.AddScoped<ICityReadRepository, CityReadRepository>();
+            services.AddScoped<ICityWriteRepository, CityWriteRepository>();
 
             //services.AddScoped<IMenuReadRepository, MenuReadRepository>();
             //services.AddScoped<IMenuWriteRepository, MenuWriteRepository>();
@@ -34,6 +41,9 @@ namespace Persistence
             //services.AddScoped<IInternalAuthhentication, AuthService>();
             //services.AddScoped<IRoleService, RoleService>();
             //services.AddScoped<IAuthorizationEndpointService, AuthorizationEndpointService>();
+
+
+            services.TryAddScoped<IAddressService, AddressService>();
         }
     }
 }

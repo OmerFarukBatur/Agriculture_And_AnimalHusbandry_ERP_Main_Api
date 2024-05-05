@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions.Services;
 using Application.DTOs.City;
 using Application.Features.Commands.City.CreateCity;
+using Application.Features.Queries.City.GetAllCities;
 using Application.Repositories.City;
 using Microsoft.EntityFrameworkCore;
 
@@ -54,10 +55,10 @@ namespace Persistence.Services
 
             await _cityWriteRepository.AddAsync(new()
             {
-                Id = city.Id,
-                CityName = city.CityName,
-                CreatedDate = city.CreatedDate,
-                Status = city.Status,
+                Id = Guid.NewGuid(),
+                CityName = request.CityName,
+                CreatedDate = DateTime.UtcNow,
+                Status = true,
                 UpdatedDate = DateTime.UtcNow
             });
 
@@ -69,6 +70,15 @@ namespace Persistence.Services
                 Status = true
             };
 
+        }
+
+        public async Task<GetAllCitiesCommandResponse> GetAllCitiesAsync(GetAllCitiesCommandRequest request)
+        {
+            List<GetAllCitiesDto> getAllCitiesDtos = await _cityReadRepository.GetAll().Select(x=> new GetAllCitiesDto { Id = x.Id, CityName = x.CityName}).ToListAsync();
+            return new() 
+            {
+                GetAllCities = getAllCitiesDtos
+            };
         }
 
         #endregion
